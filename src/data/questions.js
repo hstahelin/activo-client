@@ -50,21 +50,21 @@ export const QUESTIONS = [
     options: [
       {
         id: "motivation-look",
-        label: "Look",
+        label: "Look Better",
         value: "look",
         scoreWeight: 2,
         nextQuestionId: "goal",
       },
       {
         id: "motivation-strong",
-        label: "Strong",
+        label: "Get Stronger",
         value: "strong",
         scoreWeight: 2,
         nextQuestionId: "goal",
       },
       {
         id: "motivation-health",
-        label: "Health",
+        label: "Feel Healthier",
         value: "health",
         scoreWeight: 1,
         nextQuestionId: "goal",
@@ -188,7 +188,7 @@ export const QUESTIONS = [
   },
   {
     id: "experience",
-    text: "How does your body typically respond to weight/muscle changes?",
+    text: "What is your experience with fitness?",
     type: "single",
     category: "physical",
     options: [
@@ -433,7 +433,7 @@ export const QUESTIONS = [
   },
   {
     id: "duration",
-    text: "How long can you train per session?",
+    text: "How long would you like to train per session?",
     type: "single",
     category: "lifestyle",
     options: [
@@ -469,7 +469,7 @@ export const QUESTIONS = [
   },
   {
     id: "schedule",
-    text: "What time of day suits you best?",
+    text: "What is your work schedule like?",
     type: "single",
     category: "lifestyle",
     options: [
