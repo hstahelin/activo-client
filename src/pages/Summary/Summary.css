@@ -1,0 +1,195 @@
+.summary {
+  max-width: 600px;
+  margin: 40px auto;
+  padding: 32px;
+  background-color: #ffffff;
+  border-radius: 20px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
+    Arial, sans-serif;
+  color: #1d1d1f;
+}
+
+.summary__toggle {
+  margin: 16px auto 0;
+}
+.summary h2 {
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 24px;
+  text-align: center;
+}
+
+.summary ul {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 32px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.summary li {
+  background-color: #f9f9f9;
+  padding: 16px;
+  border: 1px solid #e5e5ea;
+  border-radius: 12px;
+  font-size: 16px;
+  line-height: 1.4;
+}
+
+.summary li strong {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 4px;
+  color: #333;
+}
+
+.summary button {
+  padding: 12px;
+  background-color: #007aff;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 17px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  width: 100%;
+}
+
+.summary button:hover {
+  background-color: #005fce;
+}
+
+.summary__bmi {
+  font-size: 18px;
+  font-weight: 500;
+  background: #f0f4ff;
+  color: #00449e;
+  padding: 12px 16px;
+  border-radius: 12px;
+  margin-bottom: 24px;
+  text-align: center;
+}
+
+/* Subtle and secondary for "Show Answers" toggle */
+.summary__toggle {
+  background: none;
+  color: #007aff;
+  font-size: 15px;
+  font-weight: 500;
+  border: none;
+  cursor: pointer;
+  text-align: center;
+  text-decoration: underline;
+  margin: 0 auto;
+  display: block;
+}
+
+.summary__toggle:hover {
+  color: #005fce;
+}
+
+.summary__bmi-info {
+  background-color: #f9f9f9;
+  padding: 16px;
+  border-radius: 12px;
+  margin: 16px 0 24px 0;
+  font-size: 15px;
+  color: #444;
+  line-height: 1.5;
+}
+
+.summary__bmi-table {
+  width: 100%;
+  margin-top: 12px;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.summary__bmi-table th,
+.summary__bmi-table td {
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+}
+
+.summary__bmi-table th {
+  background-color: #f0f0f5;
+  font-weight: 600;
+}
+
+/* Strong emphasis for primary CTA */
+.summary__submit {
+  display: block;
+  width: 100%;
+  margin: 32px 0 16px;
+  padding: 18px;
+  background: linear-gradient(90deg, #007aff 0%, #0047c2 100%);
+  color: #ffffff;
+  font-size: 20px;
+  font-weight: 700;
+  text-align: center;
+  letter-spacing: 0.5px;
+  border: none;
+  border-radius: 14px;
+  cursor: pointer;
+  box-shadow: 0 6px 18px rgba(0, 122, 255, 0.35);
+  transition: all 0.3s ease;
+}
+
+.summary__submit:hover {
+  background: linear-gradient(90deg, #005fce 0%, #003f8f 100%);
+  box-shadow: 0 4px 14px rgba(0, 122, 255, 0.5);
+  transform: scale(1.02);
+}
+
+.summary__submit:active {
+  transform: scale(0.98);
+}
+
+.summary__list {
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 480px) {
+  .summary {
+    padding: 20px;
+  }
+
+  .question__submit {
+    font-size: 16px;
+    padding: 14px;
+  }
+
+  .summary li {
+    font-size: 15px;
+  }
+
+  .summary__bmi {
+    font-size: 16px;
+  }
+}
+
+.summary__bmi-target {
+  font-size: 17px;
+  font-weight: 500;
+  background: #e9f8e5;
+  color: #2e7d32;
+  padding: 12px 16px;
+  border-left: 5px solid #66bb6a;
+  border-radius: 10px;
+  margin-bottom: 24px;
+  text-align: center;
+}
