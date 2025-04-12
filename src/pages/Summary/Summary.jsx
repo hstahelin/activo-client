@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./Summary.css";
 import { QUESTIONS } from "../../data/questions";
 
@@ -18,6 +19,8 @@ const getBMICategory = (bmi) => {
 
 function Summary({ answers, onGeneratePlan }) {
   const [showAnswers, setShowAnswers] = useState(false);
+
+  const navigate = useNavigate();
 
   const height = answers.heightWeight?.height;
   const weight = answers.heightWeight?.weight;
@@ -46,6 +49,67 @@ function Summary({ answers, onGeneratePlan }) {
     }
 
     return question.options.find((o) => o.value == value)?.label || value;
+  };
+
+  const generateUserProfile = (answers) => {
+    const height = Number(answers?.heightWeight?.height || 0);
+    const weight = Number(answers?.heightWeight?.weight || 0);
+    const bmi =
+      height && weight ? (weight / (height / 100) ** 2).toFixed(1) : null;
+
+    return {
+      age: mapLabel("age", answers.age), // mapped from age question
+      height,
+      weight,
+      bmi: bmi ? Number(bmi) : null,
+      goal: mapGoal(answers.goal), // map to readable text
+      motivation: mapArray("motivation", answers.motivation),
+      bodyGoal: mapLabel("bodyGoal", answers.bodyGoal),
+      physicalBuild: mapLabel("build", answers.build),
+      experienceLevel: mapLabel(
+        "exerciseExperience",
+        answers.exerciseExperience
+      ),
+      biggestBlockers: mapArray("blocks", answers.blocks),
+      flexibilityLevel: mapLabel("flexibility", answers.flexibility),
+      targetZones: mapArray("zones", answers.zones),
+      bestShape: mapLabel("bestShape", answers.bestShape),
+      schedule: {
+        frequency: mapLabel("timeCommitment", answers.timeCommitment),
+        duration: mapLabel("duration", answers.duration),
+        workSchedule: mapLabel("schedule", answers.schedule),
+      },
+      weightGoal: Number(answers.weightGoal) || null,
+    };
+  };
+
+  const mapArray = (questionId, values) => {
+    if (!Array.isArray(values)) return [];
+    return values.map((value) => mapLabel(questionId, value));
+  };
+
+  const mapLabel = (questionId, value) => {
+    const question = QUESTIONS.find((q) => q.id === questionId);
+    const match = question?.options?.find((opt) => opt.value === value);
+    return match?.label || value;
+  };
+
+  const mapGoal = (value) => {
+    const goals = {
+      1: "Build Muscle",
+      2: "Change Weight",
+      3: "Lose Fat",
+      4: "Improve Fitness",
+    };
+    return goals[value] || value;
+  };
+
+  const handleGeneratePlan = () => {
+    const userProfile = generateUserProfile(answers);
+    console.log("userProfile: ", userProfile);
+    console.log("answers: ", answers);
+
+    navigate("/generate", { state: { userProfile } });
   };
 
   return (
@@ -107,7 +171,7 @@ function Summary({ answers, onGeneratePlan }) {
         </div>
       )}
 
-      <button className="summary__submit" onClick={onGeneratePlan}>
+      <button className="summary__submit" onClick={handleGeneratePlan}>
         🚀 Generate My Plan
       </button>
 

@@ -1,13 +1,15 @@
-import "./Quiz.css";
 import { useState } from "react";
 import Question from "../../components/Question/Question";
 import Summary from "../Summary/Summary";
 import { QUESTIONS } from "../../data/questions";
+import { useNavigate } from "react-router-dom";
+import "./Quiz.css";
 
 function Quiz() {
   const [answers, setAnswers] = useState({});
   const [currentQuestionId, setCurrentQuestionId] = useState(QUESTIONS[0].id);
   const [isComplete, setIsComplete] = useState(false);
+  const navigate = useNavigate();
 
   const currentIndex = QUESTIONS.findIndex((q) => q.id === currentQuestionId);
   const totalQuestions = QUESTIONS.length;
@@ -68,10 +70,6 @@ function Quiz() {
     }
   };
 
-  const handleGeneratePlan = () => {
-    console.log("Custom plan generator goes here.");
-  };
-
   const handleRestart = () => {
     const confirmRestart = window.confirm(
       "Are you sure you want to start over?"
@@ -109,11 +107,7 @@ function Quiz() {
         </>
       ) : (
         <>
-          <Summary
-            answers={answers}
-            onGeneratePlan={handleGeneratePlan}
-            onRestart={handleRestart}
-          />
+          <Summary answers={answers} onRestart={handleRestart} />
           <button className="quiz__restart" onClick={handleRestart}>
             Start Over
           </button>
