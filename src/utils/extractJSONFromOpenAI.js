@@ -1,6 +1,6 @@
 /**
  * Extracts and parses the first JSON object from an OpenAI response string.
- * Safely handles markdown fences and trailing commentary.
+ * Safely handles markdown fences, trailing commentary, and attempts to auto-repair invalid JSON.
  *
  * @param {string} content - The raw OpenAI message content.
  * @returns {object} Parsed JSON object.
@@ -26,7 +26,25 @@ export function extractJSONFromOpenAI(content) {
   try {
     return JSON.parse(match[0]);
   } catch (err) {
-    console.error("Failed to parse extracted JSON:", match[0]);
-    throw new Error("JSON parsing error: " + err.message);
+    console.warn(
+      "Initial JSON.parse failed. Attempting to auto-fix common issues..."
+    );
+
+    // Try to auto-quote values like: Reps: 15 each side → Reps: "15 each side"
+    const fixed = match[0].replace(
+      /(:\s*)([^",\{\[\]\}\n]+\s[^",\{\[\]\}\n]+)(\s*[\},])/g,
+      (full, p1, p2, p3) => {
+        return `${p1}"${p2.trim()}"${p3}`;
+      }
+    );
+
+    try {
+      return JSON.parse(fixed);
+    } catch (secondErr) {
+      console.error("Failed to parse extracted JSON after auto-fix:\n", fixed);
+      throw new Error(
+        "JSON parsing error after attempted fix: " + secondErr.message
+      );
+    }
   }
 }
