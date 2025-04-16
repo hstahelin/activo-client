@@ -32,7 +32,7 @@ function GeneratePlan() {
       - For each exercise: name, sets, reps, and rest duration
     
     ⚠️ Important:
-    Only use common, recognizable exercises likely found in the [ExerciseDB API](https://v2.exercisedb.io/).
+    Only use common, recognizable exercises  found in the [free-exercise-db](https://github.com/yuhonas/free-exercise-db).
     If you're not sure about an exercise name, make your best guess — the matching will be handled programmatically later.
     
     Do not invent new exercise names. Prioritize standard, conventional movements (e.g. Push-ups, Squats, Dumbbell Rows).

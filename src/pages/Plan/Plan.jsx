@@ -1,108 +1,86 @@
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
+import { deriveFiltersFromAnswers } from "../../utils/mapping";
 import { fuzzyMatchExercise } from "../../utils/fuzzyMatchExercise";
-
 import "./Plan.css";
 
 function Plan() {
   const location = useLocation();
   const plan = location.state?.plan;
-  const [exerciseDB, setExerciseDB] = useState([]);
-
-  console.log("PLAN: ", plan);
+  const [allExercises, setAllExercises] = useState([]);
+  const [filteredExercises, setFilteredExercises] = useState([]);
 
   useEffect(() => {
     const fetchExercises = async () => {
       try {
         const res = await fetch(
-          "https://exercisedb.p.rapidapi.com/exercises?limit=0",
-          {
-            method: "GET",
-            headers: {
-              "X-RapidAPI-Key": import.meta.env.VITE_RAPIDAPI_KEY,
-              "X-RapidAPI-Host": "exercisedb.p.rapidapi.com",
-            },
-          }
+          "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/dist/exercises.json"
         );
-
         const data = await res.json();
-        console.log("DATA EXERCISE: ", data);
-
-        setExerciseDB(data);
+        setAllExercises(data);
       } catch (err) {
-        console.error("Failed to load exercises from ExerciseDB", err);
+        console.error("Failed to load exercises:", err);
       }
     };
 
     fetchExercises();
   }, []);
 
-  const findExerciseInfo = (name) => fuzzyMatchExercise(name, exerciseDB);
+  useEffect(() => {
+    if (!plan || allExercises.length === 0) return;
+    console.log("RAW PLAN:", plan);
+    const filters = deriveFiltersFromAnswers(plan);
+    console.log("Derived filters:", filters);
 
-  if (!plan || typeof plan !== "object") {
-    return <div className="plan">No valid plan found.</div>;
-  }
+    const matches = allExercises.filter((exercise) => {
+      const hasMuscle = filters.muscles.some((m) =>
+        exercise.primaryMuscles.includes(m)
+      );
+      const hasForce = filters.forces.includes(exercise.force);
+      const isLevelMatch = exercise.level === filters.level;
+      const hasCategory = filters.categories.includes(exercise.category);
+      const hasMechanic = filters.mechanic.includes(exercise.mechanic);
+
+      return (
+        hasMuscle && hasForce && isLevelMatch && hasCategory && hasMechanic
+      );
+    });
+
+    setFilteredExercises(matches);
+  }, [plan, allExercises]);
 
   return (
     <div className="plan">
-      <h1>My Custom Fitness Plan</h1>
-      {Object.entries(plan).map(([weekName, week]) => (
-        <div className="plan__week" key={weekName}>
-          <h2>{weekName}</h2>
-          {Object.entries(week).map(([dayName, day]) => (
-            <div className="plan__day" key={dayName}>
-              <h3>
-                {dayName} - {day["Muscle Group"]}
-              </h3>
-              <div className="plan__exercises">
-                {day.Exercises.map((ex, i) => {
-                  const info = findExerciseInfo(ex.Name);
-                  return (
-                    <div className="plan__exercise" key={i}>
-                      <div className="plan__exercise-info">
-                        <h4>{ex.Name}</h4>
-                        {ex.Sets && (
-                          <p>
-                            <strong>Sets:</strong> {ex.Sets}
-                          </p>
-                        )}
-                        {ex.Reps && (
-                          <p>
-                            <strong>Reps:</strong> {ex.Reps}
-                          </p>
-                        )}
-                        {ex.Duration && (
-                          <p>
-                            <strong>Duration:</strong> {ex.Duration}
-                          </p>
-                        )}
-                        {ex.Rest && (
-                          <p>
-                            <strong>Rest:</strong> {ex.Rest}
-                          </p>
-                        )}
-                      </div>
-                      {info && (
-                        <div className="plan__exercise-preview">
-                          <img
-                            src={info.gifUrl}
-                            alt={info.name}
-                            loading="lazy"
-                          />
-                          <p className="plan__muscle">Target: {info.target}</p>
-                          <p className="plan__equipment">
-                            Equipment: {info.equipment}
-                          </p>
-                        </div>
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
+      <h2>Your Personalized Workout Plan</h2>
+      {filteredExercises.length === 0 ? (
+        <p>Loading or no matching exercises found...</p>
+      ) : (
+        <ul className="exercise-list">
+          {filteredExercises.map((exercise) => (
+            <li key={exercise.id} className="exercise-card">
+              <h3>{exercise.name}</h3>
+              <img
+                src={`https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/${exercise.images[0]}`}
+                alt={exercise.name}
+              />
+              <p>
+                <strong>Primary:</strong> {exercise.primaryMuscles.join(", ")}
+              </p>
+              <p>
+                <strong>Equipment:</strong> {exercise.equipment}
+              </p>
+              <p>
+                <strong>Instructions:</strong>
+              </p>
+              <ol>
+                {exercise.instructions.map((step, idx) => (
+                  <li key={idx}>{step}</li>
+                ))}
+              </ol>
+            </li>
           ))}
-        </div>
-      ))}
+        </ul>
+      )}
     </div>
   );
 }
